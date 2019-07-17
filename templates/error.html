@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Oh no you broke it</title>
+</head>
+<body>
+    <h1>
+        Oh no you broke it
+    </h1>
+    <p style="background:#eee; font-family:monospace,sans-serif;">
+        {% autoescape false %}{{ ERROR_CODE }}{% endautoescape %}
+    </p>
+    <p>
+        Please let one of the network stewards know and they may be able to assist you.
+    </p>
+</body>
+</html>
