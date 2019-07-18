@@ -5,14 +5,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="author" href="https://plus.google.com/{{googlePlusId}}" />
-    <link rel="canonical" href="10.8.8.8/media" />
+    <link rel="canonical" href="10.8.8.8/media"/>
+
+    <style>
+        * {
+            font-family: sans-serif;
+        }
+        html, body {
+            padding: 0;
+            margin: 0;
+            border-collapse: collapse;
+        }
+        section {
+            border-collapse: collapse;
+        }
+        p {
+            text-align: center;
+        }
+        h2 {
+            text-align: center;
+        }
+        table {
+            font-family: monospace;
+        }
+        td {
+            padding: 0 10px;
+            font-family: monospace;
+        }
+        #success {
+            background-color: #FFCD05;
+            padding: 10px;
+            width: auto;
+            margin-top: 0;
+        }
+        #upload-section {
+            width: auto;
+            margin: 0 auto;
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: center;
+        }
+        #import-btn {
+            padding: 5px 16px;
+            width: auto;
+        }
+        #submit-btn {
+            padding: 5px 16px;
+            width: auto;
+        }
+        #no-files-chosen {
+            font-family: monospace;
+        }
+        #file-table {
+            font-family: monospace;
+            padding: 16px;
+            display: none;
+        }
+        #mobile-alert {
+            color: #666;
+        }
+    </style>
 
     <script type="text/javascript">
-        // This code was modified from my own https://github.com/darkrilin/rat-graphing/
+        // Script to format bytes to kb/mb/whatever for uploads, source: https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
 
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        // The file upload code was modified from my own https://github.com/darkrilin/rat-graphing/
         // Run all this once the page is ready
         window.addEventListener('load', function(){
-            document.getElementById('uploadbox').style.display = "none";
 
             // Check when file changes
             var ALLOWED_EXTENSIONS = ['.jpe','.jpg','.jpeg','.gif','.png','.bmp','.ico','.svg','.svgz','.tif','.tiff','.ai','.drw','.pct','.psp','.xcf','.psd','.raw'];
@@ -23,27 +92,44 @@
 
             document.getElementById('theFile').addEventListener('change', function(){
                 if (this.value){
-                    let filenames = "";
+                    var table, row, cell_name, cell_size, info;
+                    table = document.getElementById('file-table');
+                    info = ""
+
+                    // flush all elements from table
+                    while (table.firstChild) {
+                        table.removeChild(table.firstChild);
+                    }
+
+                    // add new elements to table
                     console.log(document.getElementById("theFile").files);
                     for (var i=0, f; f = document.getElementById("theFile").files[i]; i++) {
-                        filenames += f.name + "\n";
+                        row = document.createElement('tr');
+                        cell_name = document.createElement('td');
+                        cell_size = document.createElement('td');
+                        cell_name.append(document.createTextNode(f.name));
+                        cell_size.append(document.createTextNode(formatBytes(f.size)));
+
+                        row.append(cell_name, cell_size);
+                        table.append(row);
                     }
-                    document.getElementById("filename").innerText = filenames;
+                    document.getElementById("file-table").style.display = "table";
+                    document.getElementById("no-files-chosen").style.display = "none";
                 } else {
-                    document.getElementById("filename").innerText = "No file chosen";
+                    document.getElementById("file-table").style.display = "none";
+                    document.getElementById("no-files-chosen").style.display = "block";
                 }
             });
 
             // Open file dialog when import is pressed
-            document.getElementById("importbtn").addEventListener('click', function(){
+            document.getElementById("import-btn").addEventListener('click', function(){
                 document.getElementById('theFile').click();
             });
 
             // Submit - read file and generate the chart from that data.
-            document.getElementById('submitbtn').addEventListener("click", function(){
+            document.getElementById('submit-btn').addEventListener("click", function(){
                 if (document.getElementById('theFile').files.length != 0) {
                     if (allowed_file(document.getElementById('theFile').files[0].name)) {
-                        document.getElementById("uploadbox").style.display = 'display'
                         document.getElementById("target").submit();
                     }
                     else{
@@ -55,27 +141,37 @@
                 }
             });
         });
-
     </script>
 </head>
 
 <body>
     <section class="box">
-        <h2 style="text-align:center;">
+        {% if SUCCESS %}
+        <p id="success">
+            Files successfully uploaded!
+        </p>
+        {% endif %}
+        <h2>
             DWEBCAMP MEDIA UPLOADER
         </h2>
-        <p style="text-align:center;">
+        <p>
             Uploads images to the mesh, and then syncs them with archive.org when internet is available.
         </p>
-        <div style="width:auto; margin:0 auto; display:flex; flex-flow:column nowrap; align-items:center;">
-            <button id="importbtn" style="padding:5px 16px; width:auto;">Select files</button>
-            <p id="filename">No files chosen</p>
-            <button id="submitbtn" style="padding:5px 16px; width:auto;">Upload to mesh</button>
+        <div id="upload-section">
+            <button id="import-btn">Select files</button>
+            <div style="margin:20px auto;">
+                <p id="no-files-chosen">No files chosen</p>
+                <table id="file-table"></table>
+            </div>
+            <button id="submit-btn">Upload to mesh</button>
         </div>
+        <br/>
+        <br/>
+        <p id="mobile-alert">
+            Note for mobile users:<br/>
+            Multiple file uploads may not work on mobile, but they should function correctly in <span>chrome on android</span> or <span>safari on ios</span>.
+        </p>
     </section>
-    <div id="uploadbox">
-        <p>Uploading File...</p>
-    </div>
 
     <form id="target" action="/upload" enctype="multipart/form-data" method="post">
         <input id="theFile" name="file" type="file" accept="image/*" style="position: fixed; top: -100em" multiple>

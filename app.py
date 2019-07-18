@@ -54,7 +54,7 @@ def handle_form():
                     each_file.save(upload_path + filename)
                     files_to_process.append(upload_path + filename)
                 except PermissionError:
-                    return redirect('/upload_error.html')
+                    return error("PermissionError - can't get write access?<br/>Maybe speak to one of the Network Stewards about this (preferrably Riley)")
 
         # now do the processing
         num_files = len(files_to_process)
@@ -72,15 +72,15 @@ def handle_form():
                     return error("KeyError when uploading {} files<br/>Filename: {}".format(num_files, current_file))
 
         # redirect to upload successful page
-        return redirect("/")
+        return index(True)
 
-@app.route("/error")
+@app.route("/media/error")
 def error(error_code):
     return render_template("error.html", ERROR_CODE = error_code)
 
-@app.route("/")
-def index():
-    return render_template("index.html");
+@app.route("/media")
+def index(success=False):
+    return render_template("index.html", SUCCESS = success);
 
 
 if __name__ == "__main__":
