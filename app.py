@@ -10,7 +10,7 @@ ALLOWED_EXTENSIONS = {'jpg','png'}
 
 app = Flask(__name__, static_url_path="")
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = os.environ['FLASK_SECRET_KEY']
+app.secret_key = os.getenv('FLASK_SECRET_KEY')
 
 
 # Just some misc functions I copied from other project code that I'll document later
@@ -24,7 +24,7 @@ def ensure_dir(f):
 
 
 # Do the flask
-@app.route('/media/upload', methods=['POST'])
+@app.route('/upload', methods=['POST'])
 def handle_form():
     if request.method == 'POST':
         session['output_path'] = ""
@@ -74,14 +74,15 @@ def handle_form():
         # redirect to upload successful page
         return index(True)
 
-@app.route("/media/error")
+@app.route("/error")
 def error(error_code):
     return render_template("error.html", ERROR_CODE = error_code)
 
-@app.route("/media")
+@app.route("/")
 def index(success=False):
     return render_template("index.html", SUCCESS = success);
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80, debug=True)
+    # app.run(host='10.8.8.8', port=88, debug=False)  # Run on specific mesh IP
+    app.run(host='0.0.0.0', port=80, debug=True)  # Test on localhost
