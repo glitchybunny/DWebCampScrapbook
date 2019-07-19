@@ -43,8 +43,9 @@ def handle_form():
             if each_file and allowed_file(each_file.filename):
                 filename = secure_filename(each_file.filename)
                 try:
-                    each_file.save(upload_path + filename)
-                    files_to_process.append(upload_path + filename)
+                    new_filename = upload_path + filename
+                    each_file.save(new_filename)
+                    files_to_process.append(new_filename)
                 except PermissionError:
                     return error("PermissionError - can't get write access?<br/>Maybe speak to one of the Network Stewards about this (preferrably Riley)")
 
@@ -82,9 +83,11 @@ if __name__ == '__main__':
     ALLOWED_EXTENSIONS = {'jpg','png'}
 
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-    app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
+    app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', '1337-420-69-666') # please ensure the secret key is being set properly
     app.config['SESSION_TYPE'] = 'filesystem'
 
-    # Then run the app
-    #app.run(host='10.8.8.8', port=88, debug=False)  # Run on specific mesh IP
-    app.run(host='0.0.0.0', port=80, debug=True)  # Test on localhost
+    # App execution code
+    if os.getenv('DEBUG', False):
+        app.run(host='0.0.0.0', port=80, debug=True)  # Test on localhost
+    else:
+        app.run(host='10.8.8.8', port=88, debug=False)  # Run on specific mesh IP
