@@ -4,26 +4,18 @@ from werkzeug.utils import secure_filename
 import requests
 import internetarchive
 
-# Initialise all the main stuff
-UPLOAD_FOLDER = '/uploads/'
-ALLOWED_EXTENSIONS = {'jpg','png'}
-
-app = Flask(__name__, static_url_path="")
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = os.getenv('FLASK_SECRET_KEY')
-
-
-# Just some misc functions I copied from other project code that I'll document later
-def allowed_file(filename):
+def allowed_file(filename):  # tests file extension and compares against list of allowed extensions
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-def ensure_dir(f):
+def ensure_dir(f):  # checks if directory exists, and creates it if it doesn't
     d = os.path.dirname(f)
     if not os.path.isdir(d):
         os.makedirs(d)
 
 
-# Do the flask
+# Setup flask stuff
+app = Flask(__name__, static_url_path="")
+
 @app.route('/upload', methods=['POST'])
 def handle_form():
     if request.method == 'POST':
@@ -83,6 +75,16 @@ def index(success=False):
     return render_template("index.html", SUCCESS = success);
 
 
-if __name__ == "__main__":
-    # app.run(host='10.8.8.8', port=88, debug=False)  # Run on specific mesh IP
+if __name__ == '__main__':
+
+    # Initialise all important variables and config
+    UPLOAD_FOLDER = '/uploads/'
+    ALLOWED_EXTENSIONS = {'jpg','png'}
+
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
+    app.config['SESSION_TYPE'] = 'filesystem'
+
+    # Then run the app
+    #app.run(host='10.8.8.8', port=88, debug=False)  # Run on specific mesh IP
     app.run(host='0.0.0.0', port=80, debug=True)  # Test on localhost
