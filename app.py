@@ -24,7 +24,7 @@ def ensure_dir(f):
 
 
 # Do the flask
-@app.route('/upload', methods=['POST'])
+@app.route('/media/upload', methods=['POST'])
 def handle_form():
     if request.method == 'POST':
         session['output_path'] = ""
