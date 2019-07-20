@@ -2,8 +2,8 @@ import os
 from flask import Flask, render_template, request, redirect, session
 from werkzeug.utils import secure_filename
 import time
-from PIL import Image
-import pyexiv2
+import json
+#import pyexiv2  # pyexiv2 doesn't seem to have support for the raspberry pi we're running the code on, so I will have to find another alternative
 #import requests
 #import internetarchive
 
@@ -17,13 +17,19 @@ def ensure_dir(f):  # checks if directory exists, and creates it if it doesn't
         os.makedirs(d)
 
 def add_metadata(filename, artist, desc):  # Add metadata to image file
-    im = pyexiv2.Image(filename)
+    filename_json = os.path.splitext(filename)[0]+'.json'
+
+    with open(filename_json, 'w') as f:
+        json.dump({'Exif.Image.Artist':artist, "Exif.Image.ImageDescription":desc}, f)
+
+    """ # This is currently completely broken
+    im = pyexiv2.Image(filename)  
     exif = im.read_exif()
     exif['Exif.Image.Artist'] = artist
     exif['Exif.Image.ImageDescription'] = desc
     im.modify_exif(exif)
-    print(filename, artist, desc)
-    return True
+    """
+
 
 if __name__ == '__main__':
     # Setup flask stuff
