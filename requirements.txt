@@ -1,3 +1,5 @@
-flask
+flask>=1.0.0
 internetarchive
 requests
+pillow
+pyexiv2
