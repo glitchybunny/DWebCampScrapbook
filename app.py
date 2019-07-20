@@ -1,11 +1,13 @@
 import os
 from flask import Flask, render_template, request, redirect, session
 from werkzeug.utils import secure_filename
-import requests
-import internetarchive
+import time
+#import requests
+#import internetarchive
 
 def allowed_file(filename):  # tests file extension and compares against list of allowed extensions
-    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+    return os.path.splitext(filename)[1] in ALLOWED_EXTENSIONS
+    #return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 def ensure_dir(f):  # checks if directory exists, and creates it if it doesn't
     d = os.path.dirname(f)
@@ -33,8 +35,8 @@ def handle_form():
             print("Redirecting to request URL")
             return redirect(request.url)
 
-        # loop through and save all uploaded files
-        files_to_process = []
+        # loop through and save all uploaded files to temp directory
+        upload_time = str(round(time.time()))
         upload_path = os.path.join(app.root_path + app.config['UPLOAD_FOLDER'])
         ensure_dir(upload_path)
 
@@ -43,14 +45,15 @@ def handle_form():
             if each_file and allowed_file(each_file.filename):
                 filename = secure_filename(each_file.filename)
                 try:
-                    new_filename = upload_path + filename
-                    each_file.save(new_filename)
-                    files_to_process.append(new_filename)
+                    filepath = upload_path + os.path.splitext(filename)[0] + "_" + upload_time + os.path.splitext(filename)[1]
+                    each_file.save(filepath)
+                    files_to_process.append(filepath)
                 except PermissionError:
                     return error("PermissionError - can't get write access?<br/>Maybe speak to one of the Network Stewards about this (preferrably Riley)")
 
-        # now do the processing
+        # now make filenames unique and save files to uploaded directory
         num_files = len(files_to_process)
+        print("Batch size: " + str(num_files))
 
         if num_files == 0:
             # redirect if none of the files are uploaded correctly
@@ -79,11 +82,13 @@ def index(success=False):
 if __name__ == '__main__':
 
     # Initialise all important variables and config
+    TEMP_FOLDER = '/temp/'
     UPLOAD_FOLDER = '/uploads/'
-    ALLOWED_EXTENSIONS = {'jpg','png'}
+    ALLOWED_EXTENSIONS = ['.jpe','.jpg','.jpeg','.gif','.png','.bmp','.ico','.svg','.svgz','.tif','.tiff','.ai','.drw','.pct','.psp','.xcf','.psd','.raw']
 
+    app.config['TEMP_FOLDER'] = TEMP_FOLDER
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-    app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', '1337-420-69-666') # please ensure the secret key is being set properly
+    app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', '42069') # please ensure the secret key is being set properly
     app.config['SESSION_TYPE'] = 'filesystem'
 
     # App execution code
