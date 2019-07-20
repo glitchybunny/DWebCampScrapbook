@@ -21,6 +21,9 @@ app = Flask(__name__, static_url_path="")
 @app.route('/upload', methods=['POST'])
 def handle_form():
     if request.method == 'POST':
+
+        print(request.form)
+
         session['output_path'] = ""
 
         # check if the post request has the file part
@@ -45,7 +48,7 @@ def handle_form():
             if each_file and allowed_file(each_file.filename):
                 filename = secure_filename(each_file.filename)
                 try:
-                    filepath = upload_path + os.path.splitext(filename)[0] + "_" + upload_time + os.path.splitext(filename)[1]
+                    filepath = upload_path + upload_time + "_" + filename
                     each_file.save(filepath)
                     files_to_process.append(filepath)
                 except PermissionError:
