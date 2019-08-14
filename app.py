@@ -1,3 +1,12 @@
+"""
+
+    A local web app that allows images to be uploaded (and eventually backed up to archive.org)
+    Author: Riley Taylor (https://rtay.io/)
+    Last modified: 2019/08/15
+    Python version: 3.7
+
+"""
+
 import os
 from flask import Flask, render_template, request, redirect, session, make_response, Blueprint
 from werkzeug.utils import secure_filename
@@ -125,6 +134,7 @@ def handle_form():
     # redirect to upload successful page
     return index(True)"""
 
+
 @app.route("/")
 def index(success=False):
     return render_template("index.html", SUCCESS = success);
@@ -136,7 +146,7 @@ if __name__ == '__main__':
     ALLOWED_EXTENSIONS = ['.jpe','.jpg','.jpeg','.gif','.png','.bmp','.ico','.svg','.svgz','.tif','.tiff','.ai','.drw','.pct','.psp','.xcf','.psd','.raw']
 
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-    app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', '42069') # please ensure the secret key is being set properly
+    app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
     app.config['SESSION_TYPE'] = 'filesystem'
 
     # App execution code
