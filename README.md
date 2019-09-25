@@ -8,5 +8,3 @@ Simple webapp to upload images to archive.org when internet is available, initia
 5. Once all that is done, it should be as simple as running **app.py**
 
 By default the flask server runs on 10.8.8.8:88 (because that was the app setup for dweb2019), but that can be changed. 
-
-If you want different settings on different devices, having an environment var like DEBUG=true is useful.
