@@ -1,0 +1,25 @@
+{
+  "name": "dwebcamp-scrapbook",
+  "version": "1.0.0",
+  "description": "Node.js + Express web-app that lets users upload their DWeb Camp images  to a scrapbook hosted on archive.org.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/glitchybunny/dwebcamp-scrapbook.git"
+  },
+  "author": "Glitch Taylor",
+  "license": "ACSL-1.4",
+  "bugs": {
+    "url": "https://github.com/glitchybunny/dwebcamp-scrapbook/issues"
+  },
+  "homepage": "https://github.com/glitchybunny/dwebcamp-scrapbook#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "morgan": "^1.10.0"
+  }
+}
