@@ -1,4 +1,4 @@
-Node.js + Express web-app that lets users upload their DWeb Camp images  to a scrapbook hosted on archive.org.
+Node.js + Express web-app that lets users upload their DWeb Camp images to a scrapbook hosted on archive.org.
 
 ---
 

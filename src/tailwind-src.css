@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .link {
+        text-decoration: underline;
+        color: theme('colors.lime.600');
+    }
+    .link:hover {
+        color: theme('colors.lime.700');
+        outline: theme('outlineWidth.1') dotted theme('colors.lime.700');
+    }
+}
