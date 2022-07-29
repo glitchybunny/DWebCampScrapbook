@@ -40,16 +40,6 @@
     return document.getElementById(id);
   }
 
-  function formatBytes(bytes) {
-    if (bytes < 1024) {
-      return `${bytes} bytes`;
-    } else if (bytes < 1048576) {
-      return `${(bytes / 1024).toFixed(1)}KB`;
-    } else {
-      return `${(bytes / 1048576).toFixed(1)}MB`;
-    }
-  }
-
   const input = byId("image-uploads"), preview = byId("preview");
   input.addEventListener("change", () => {
     byId("preview").innerHTML = "";
@@ -65,16 +55,32 @@
       for (const file of files) {
         const reader = new FileReader();
         reader.addEventListener("load", (evt) => {
-          const item = document.createElement("div");
-          const itemImage = document.createElement("img");
-          item.textContent = `${file.name} - ${formatBytes(file.size)}`;
-          itemImage.src = evt.target.result;
-          item.appendChild(itemImage);
-          preview.appendChild(item);
+          createImagePreview(file, evt.target.result);
         }, false);
         reader.readAsDataURL(file);
       }
     }
   });
+
+  function formatBytes(bytes) {
+    // Formats bytes in a more human-readable format
+    if (bytes < 1024) {
+      return `${bytes} bytes`;
+    } else if (bytes < 1048576) {
+      return `${(bytes / 1024).toFixed(1)}KB`;
+    } else {
+      return `${(bytes / 1048576).toFixed(1)}MB`;
+    }
+  }
+
+  function createImagePreview(file, dataUrl) {
+    // Adds an image preview to the DOM
+    const item = document.createElement("div");
+    const itemImage = document.createElement("img");
+    item.textContent = `${file.name} - ${formatBytes(file.size)}`;
+    itemImage.src = dataUrl;
+    item.appendChild(itemImage);
+    preview.appendChild(item);
+  }
 </script>
 </html>
