@@ -14,19 +14,67 @@
   <!-- Page should hopefully work even without CSS -->
   <link rel="stylesheet" href="tailwind.css">
 </head>
-<body>
-<header class="mx-8 my-6">
-  <h1 class="text-3xl mb-4">DWeb Scrapbook</h1>
-  <p class="mb-2">Upload your photos taken at DWeb Camp 2022 into a shared community scrapbook</p>
-  <p class="mb-2">Wanna help out? <a href="https://github.com/glitchybunny/dwebcamp-scrapbook" class="link">https://github.com/glitchybunny/dwebcamp-scrapbook</a></p>
+
+<body class="flex flex-col w-screen text-sm lg:text-base">
+<header class="p-6">
+  <h1 class="text-xl lg:text-2xl xl:text-3xl mb-4"><b>DWeb Scrapbook</b></h1>
+  <p class="mb-2">Upload your photos taken at DWeb Camp 2022 into a shared community scrapbook.</p>
+  <p class="mb-2">Wanna help out? <a href="https://github.com/glitchybunny/dwebcamp-scrapbook" class="link">Contribute
+    on GitHub</a>.
+  </p>
 </header>
-<hr class="my-8">
-<main>
-<div class="m-8 border border-gray-500">
-  <button class="text-center text-lg p-4 w-full" type="button" name="Upload button">Click here to upload your pictures</button>
-</div>
+<hr>
+<main id="drop-zone" class="p-6 flex flex-col">
+  <label for="image-uploads"><b>Choose images to upload (PNG, JPG)</b></label>
+  <input class="border border-gray-500 text-center text-lg p-4 w-full my-2" type="file" name="Image upload button"
+         id="image-uploads" accept="image/png, image/jpeg" multiple="multiple" autocomplete="off">
+  <div id="preview">
+    <p>No files currently selected for upload.</p>
+  </div>
 </main>
 </body>
-<!-- Javascript -->
-<!-- Unfortunately I can't make the uploading process noscript compatible -->
+
+<!-- Inline javascript -->
+<script>
+  const byId = (id) => {
+    return document.getElementById(id);
+  }
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) {
+      return `${bytes} bytes`;
+    } else if (bytes < 1048576) {
+      return `${(bytes / 1024).toFixed(1)}KB`;
+    } else {
+      return `${(bytes / 1048576).toFixed(1)}MB`;
+    }
+  }
+
+  const input = byId("image-uploads"), preview = byId("preview");
+  input.addEventListener("change", () => {
+    byId("preview").innerHTML = "";
+
+    const files = input.files;
+    if (files.length === 0) {
+      // No files selected
+      const p = document.createElement("p");
+      p.textContent = "No files currently selected for upload.";
+      preview.appendChild(p);
+    } else {
+      // Create preview for each file, along with inputs for adjusting filename & metadata
+      for (const file of files) {
+        const reader = new FileReader();
+        reader.addEventListener("load", (evt) => {
+          const item = document.createElement("div");
+          const itemImage = document.createElement("img");
+          item.textContent = `${file.name} - ${formatBytes(file.size)}`;
+          itemImage.src = evt.target.result;
+          item.appendChild(itemImage);
+          preview.appendChild(item);
+        }, false);
+        reader.readAsDataURL(file);
+      }
+    }
+  });
+</script>
 </html>
