@@ -7,8 +7,14 @@
         text-decoration: underline;
         color: theme('colors.lime.600');
     }
+
     .link:hover {
         color: theme('colors.lime.700');
         outline: theme('outlineWidth.1') dotted theme('colors.lime.700');
+    }
+
+    .input {
+        border: theme('borderWidth.DEFAULT') solid theme('colors.gray.500');
+        padding: theme('padding.1');
     }
 }

@@ -1,86 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>DWEB SCRAPBOOK</title>
-  <meta name="author" content="Glitch Taylor">
-  <meta name="description" content="A scrapbook where you can upload your photos taken at DWeb Camp 2022.">
-  <meta property="og:title" content="DWeb Scrapbook">
-  <meta property="og:description" content="A scrapbook where you can upload your photos taken at DWeb Camp 2022.">
-  <link rel="creator" href="https://rtay.io"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DWEB SCRAPBOOK</title>
+    <meta name="author" content="Glitch Taylor" />
+    <meta
+      name="description"
+      content="A scrapbook where you can upload your photos taken at DWeb Camp 2022."
+    />
+    <meta property="og:title" content="DWeb Scrapbook" />
+    <meta
+      property="og:description"
+      content="A scrapbook where you can upload your photos taken at DWeb Camp 2022."
+    />
+    <link rel="creator" href="https://rtay.io" />
 
-  <!-- Stylesheets -->
-  <!-- Page should hopefully work even without CSS -->
-  <link rel="stylesheet" href="tailwind.css">
-</head>
+    <!-- Stylesheets -->
+    <!-- Page should hopefully work even without CSS -->
+    <link rel="stylesheet" href="./tailwind.css" />
+  </head>
 
-<body class="flex flex-col w-screen text-sm lg:text-base">
-<header class="p-6">
-  <h1 class="text-xl lg:text-2xl xl:text-3xl mb-4"><b>DWeb Scrapbook</b></h1>
-  <p class="mb-2">Upload your photos taken at DWeb Camp 2022 into a shared community scrapbook.</p>
-  <p class="mb-2">Wanna help out? <a href="https://github.com/glitchybunny/dwebcamp-scrapbook" class="link">Contribute
-    on GitHub</a>.
-  </p>
-</header>
-<hr>
-<main id="drop-zone" class="p-6 flex flex-col">
-  <label for="image-uploads"><b>Choose images to upload (PNG, JPG)</b></label>
-  <input class="border border-gray-500 text-center text-lg p-4 w-full my-2" type="file" name="Image upload button"
-         id="image-uploads" accept="image/png, image/jpeg" multiple="multiple" autocomplete="off">
-  <div id="preview">
-    <p>No files currently selected for upload.</p>
-  </div>
-</main>
-</body>
+  <body class="flex flex-col w-screen text-sm lg:text-base">
+    <header class="p-6">
+      <h1 class="text-xl lg:text-2xl xl:text-3xl mb-4">
+        <b>DWeb Scrapbook</b>
+      </h1>
+      <p class="mb-2">
+        Upload your photos taken at <b>DWeb Camp 2022</b> into a shared
+        community scrapbook.
+      </p>
+      <p class="mb-2">
+        Wanna help out?
+        <a
+          href="https://github.com/glitchybunny/dwebcamp-scrapbook"
+          class="link"
+          >Contribute on GitHub</a
+        >.
+      </p>
+    </header>
+    <hr />
+    <main id="drop-zone" class="p-6 flex flex-col">
+      <label for="image-uploads"
+        ><b>Choose images to upload (PNG, JPG)</b></label
+      >
+      <input
+        class="border border-gray-500 text-center text-lg p-4 w-full my-2 cursor-pointer"
+        type="file"
+        name="Image upload button"
+        id="image-uploads"
+        accept="image/png, image/jpeg"
+        multiple="multiple"
+        autocomplete="off"
+      />
+      <div id="preview">
+        <p>No files currently selected for upload.</p>
+      </div>
+      <div
+        id="preview-template"
+        class="hidden flex flex-row flex-nowrap bg-lime-100 even:bg-lime-200 mb-4 p-2"
+      >
+        <figure class="mr-2">
+          <img
+            src=""
+            alt=""
+            class="w-32 h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 object-cover hover:object-contain bg-lime-800/20 drop-shadow-sm cursor-crosshair flex-shrink-0"
+          />
+          <figcaption class="text-center"></figcaption>
+        </figure>
+        <div
+          class="p-2 flex-grow grid grid-cols-2 gap-y-2 gap-x-4 content-start"
+        >
+          <label class="col-span-1" title="Image title / filename">
+            Title: <input type="text" class="input w-full" />
+          </label>
+          <label class="col-span-1" title="Image author/photographer">
+            Author: <input type="text" class="input w-full" />
+          </label>
+          <label
+            class="col-span-1"
+            title="Time depicted / time image was taken"
+          >
+            Time: <input type="text" class="input w-full" />
+          </label>
+          <label
+            class="col-span-1"
+            title="Location depicted / location of photo"
+          >
+            Location: <input type="text" class="input w-full" />
+          </label>
+          <label class="col-span-2" title="Image description / alt text">
+            Description / Alt text:
+            <textarea class="input w-full" wrap="hard" rows="3"></textarea>
+          </label>
+        </div>
+      </div>
+      <div class="my-2 flex justify-center">
+        <input
+          type="button"
+          value="Upload files!"
+          id="upload-button"
+          class="button cursor-pointer border rounded px-2 py-1 bg-gray-200 border-gray-400 hover:bg-gray-300 hover:border-gray-500 text-lg"
+        />
+      </div>
+    </main>
+  </body>
 
-<!-- Inline javascript -->
-<script>
-  const byId = (id) => {
-    return document.getElementById(id);
-  }
-
-  const input = byId("image-uploads"), preview = byId("preview");
-  input.addEventListener("change", () => {
-    byId("preview").innerHTML = "";
-
-    const files = input.files;
-    if (files.length === 0) {
-      // No files selected
-      const p = document.createElement("p");
-      p.textContent = "No files currently selected for upload.";
-      preview.appendChild(p);
-    } else {
-      // Create preview for each file, along with inputs for adjusting filename & metadata
-      for (const file of files) {
-        const reader = new FileReader();
-        reader.addEventListener("load", (evt) => {
-          createImagePreview(file, evt.target.result);
-        }, false);
-        reader.readAsDataURL(file);
-      }
-    }
-  });
-
-  function formatBytes(bytes) {
-    // Formats bytes in a more human-readable format
-    if (bytes < 1024) {
-      return `${bytes} bytes`;
-    } else if (bytes < 1048576) {
-      return `${(bytes / 1024).toFixed(1)}KB`;
-    } else {
-      return `${(bytes / 1048576).toFixed(1)}MB`;
-    }
-  }
-
-  function createImagePreview(file, dataUrl) {
-    // Adds an image preview to the DOM
-    const item = document.createElement("div");
-    const itemImage = document.createElement("img");
-    item.textContent = `${file.name} - ${formatBytes(file.size)}`;
-    itemImage.src = dataUrl;
-    item.appendChild(itemImage);
-    preview.appendChild(item);
-  }
-</script>
+  <!-- Inline javascript -->
+  <script src="./uploader.js"></script>
 </html>
