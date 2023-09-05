@@ -1,7 +1,7 @@
 /*
 
     A local web app that allows images to be uploaded into a scrapbook on archive.org
-    Author: Glitch Taylor (https://rtay.io/)
+    Author: Glitch Taylor
 
  */
 
